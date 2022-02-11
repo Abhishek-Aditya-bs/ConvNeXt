@@ -29,29 +29,74 @@ ConvNets dubbed ConvNeXt.
 
 ## Architecture of ConvNeXt
 
-Various Design decisions are considered in the ConvNeXt architecture.
+<p align="center">
+  <img src="https://github.com/Abhishek-Aditya-bs/ConvNeXt/blob/main/doc/Architecture-Changes.png" />
+</p>
 
-1. Macro Design:
+<p align="center">
+    Various Design decisions are considered in the ConvNeXt architecture
+</p>
+
+1. Macro Design :
 - Changing the number of blocks from (3,4,6,3) as in ResNet-50 to (3,3,9,3)
 - Changing the stem to "Patchify" with a patchify layer implemented using a 4x4, stride 4 convolution layer adopting the "patchify" strategy of the vision transformers.
 2. ResNeXt :
+
+<p align="center">
+  <img src="https://github.com/Abhishek-Aditya-bs/ConvNeXt/blob/main/doc/ResNetXt-Block.png" />
+</p>
+
+<p align="center">
+     ResNeXt block
+</p>
+
 Adopting the idea of ResNeXt which has a better FLOPs/accuracy trade-off than a vanilla ResNet having the core component is grouped convolution, where
-the convolutional filters are separated into different groups. At a high level, ResNeXt’s guiding principle is to “use more groups, expand width”. Using depthwise convolution, a special case
-of grouped convolution where the number of groups equals the number of channels effectively reduces the
+the convolutional filters are separated into different groups. At a high level, ResNeXt’s guiding principle is to “use more groups, expand width”. Using depthwise convolution, a special case of grouped convolution where the number of groups equals the number of channels effectively reduces the
 network FLOPs.
+
 3. Inverted Bottleneck:
-One important design in every Transformer block is that it
-creates an inverted bottleneck, i.e., the hidden dimension of
+
+<p align="center">
+  <img src="https://github.com/Abhishek-Aditya-bs/ConvNeXt/blob/main/doc/Inverted-bottleneck-Block.png" />
+</p>
+
+<p align="center">
+     Inverted bottleneck Block
+</p>
+
+One important design in every Transformer block is that it creates an inverted bottleneck, i.e., the hidden dimension of
 the MLP block is four times wider than the input dimension. This Transformer design is connected to the inverted bottleneck design with an expansion
 ratio of 4 used in ConvNets.
-4. Large Kernel Size : One of the most distinguishing aspects of vision Transformers is their non-local
+
+4. Large Kernel Size : 
+
+<p align="center">
+  <img src="https://github.com/Abhishek-Aditya-bs/ConvNeXt/blob/main/doc/Depthwise-Conv-moved-up.png" />
+</p>
+
+<p align="center">
+     The position of the spatial depthwise conv layer is moved up
+</p>
+
+One of the most distinguishing aspects of vision Transformers is their non-local
 self-attention, which enables each layer to have a global
 receptive field. To explore large kernels,
 one prerequisite is to move up the position of the depthwise
 conv layer. That is a design decision
 also evident in Transformers: the MSA block is placed prior
 to the MLP layers. The network’s performance increases when 7x7 depthwise conv is used in each block.
+
+
 5.  Layer-wise Micro Designs:
+
+<p align="center">
+  <img src="https://github.com/Abhishek-Aditya-bs/ConvNeXt/blob/main/doc/Block-Comparision.png" />
+</p>
+
+<p align="center">
+     Block design comparisions of ResNet, a Swin Transformer, and ConvNeXt. 
+</p>
+
 - Replacing ReLU with GELU
 - Fewer activation functions
 - Fewer normalization layers
